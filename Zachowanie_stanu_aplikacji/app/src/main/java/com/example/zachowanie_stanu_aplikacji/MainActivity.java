@@ -1,0 +1,142 @@
+package com.example.zachowanie_stanu_aplikacji;
+
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+    private  static final  String KEY_COUNT="liczba_k";
+    private  static final  String STATE_CHECKBOX="check";
+    private  static final  String STATE_SWITCH="tryb";
+    private  static final  String STATE_INPUT="tekst";
+
+    private  TextView tekst_input;
+    private EditText name;
+    private Button btn;
+    private TextView liczba;
+    private  TextView stan_check;
+    private Switch tryb;
+    private CheckBox stan;
+    private int liczba_k=0;
+    private boolean stan_checkbox;
+    private boolean stan_switch;
+    private ConstraintLayout layout;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        btn=findViewById(R.id.button);
+        liczba=findViewById(R.id.textView);
+        stan_check=findViewById(R.id.textView2);
+        stan=findViewById(R.id.checkBox);
+        tryb=findViewById(R.id.switch1);
+        layout=findViewById(R.id.main);
+        name=findViewById(R.id.editTextText);
+        tekst_input=findViewById(R.id.tekst_input);
+
+        /*if(savedInstanceState!=null){
+            =savedInstanceState.getInt(STATE_SWITCH);
+        }*/
+        tekst_input.setText("ververvre");
+        tekst_input.setText(name.getText().toString().trim());
+        if(savedInstanceState!=null){
+            boolean isSwitchChecked = savedInstanceState.getBoolean(STATE_SWITCH);
+            tryb.setChecked(isSwitchChecked);
+            if (isSwitchChecked) {
+                layout.setBackgroundColor(Color.BLACK);
+                tryb.setText("tryb ciemny");
+            } else {
+                layout.setBackgroundColor(Color.WHITE);
+                tryb.setText("tryb jasny");
+            }
+        }
+        tryb.setOnCheckedChangeListener((buttonView,isChecked)->{
+            if(isChecked){
+                stan_switch=true;
+                tryb.setText("tryb ciemny");
+                Toast.makeText(MainActivity.this,"zmieniono tryb",Toast.LENGTH_SHORT).show();
+                layout.setBackgroundColor(Color.BLACK);
+            }else{
+                stan_switch=false;
+                tryb.setText("tryb jasny");
+                Toast.makeText(MainActivity.this,"zmieniono tryb",Toast.LENGTH_SHORT).show();
+                layout.setBackgroundColor(Color.WHITE);
+            }
+        });
+        tryb.setChecked(stan_switch);
+
+
+
+        if(savedInstanceState!=null){
+            boolean isCheckChecked = savedInstanceState.getBoolean(STATE_CHECKBOX);
+            stan.setChecked(isCheckChecked);
+        }
+        stan.setOnCheckedChangeListener((buttonView,isChecked)->{
+        if (isChecked) {
+            stan_checkbox=true;
+            stan_check.setText("check box zaznaczony");
+
+        }else{
+            stan_checkbox=false;
+            stan_check.setText("check box odzaznaczony");
+
+        }
+        });
+        stan.setChecked(stan_checkbox);
+
+
+
+        if(savedInstanceState!=null){
+            liczba_k=savedInstanceState.getInt(KEY_COUNT);
+        }
+        updateCountText();
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                liczba_k++;
+                updateCountText();
+            }
+        });
+
+        }
+        @Override
+        protected  void onSaveInstanceState(Bundle outState){
+            super.onSaveInstanceState(outState);
+            outState.putInt(KEY_COUNT,liczba_k);
+            outState.putBoolean(STATE_CHECKBOX,stan_checkbox);
+            outState.putBoolean(STATE_SWITCH,stan_switch);
+        }
+        private  void  updateCountText(){
+            liczba.setText("liczba:"+liczba_k);
+        }
+        private void updateCheckState(){
+            if(stan_checkbox==true) {
+                stan_check.setText("check box zaznaczony");
+            }else{
+                stan_check.setText("check box odzaznaczony");
+            }
+        }
+        private void updateSwitchState(){
+            if(stan_switch==true) {
+                tryb.setText("tryb ciemny");
+            }else{
+                stan.setText("tryb jasny");
+            }
+        }
+}
